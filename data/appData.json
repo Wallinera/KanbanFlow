@@ -1,0 +1,82 @@
+{
+  "boards": [
+    {
+      "id": "72d8",
+      "boardName": "Personal",
+      "lists": [
+        {
+          "type": "toDo",
+          "tasks": [
+            {
+              "taskName": "Be the better you!",
+              "description": "Improve yourself every day! dont be the same person you were yesterday!",
+              "state": "toDo",
+              "id": 1765791978599,
+              "date": "2025-12-15T09:46:18.599Z"
+            }
+          ]
+        },
+        {
+          "type": "inProgress",
+          "tasks": [
+            {
+              "taskName": "Focus on your goals.",
+              "description": "Never Give Up!",
+              "state": "inProgress",
+              "id": 1765792002355,
+              "date": "2025-12-15T09:46:42.355Z"
+            }
+          ]
+        },
+        {
+          "type": "done",
+          "tasks": [
+            {
+              "taskName": "Buy Groceries",
+              "description": "1 Milk, 2 Carrots, Chicken Breast, Oats...",
+              "state": "done",
+              "date": "2025-12-15T09:45:19.619Z",
+              "id": 1765791919619
+            }
+          ]
+        }
+      ],
+      "date": "2025-12-15T09:44:23.794Z"
+    },
+    {
+      "id": "4d79",
+      "boardName": "Work",
+      "lists": [
+        {
+          "type": "toDo",
+          "tasks": [
+            {
+              "taskName": "Learn Advanced Redux",
+              "description": "Watch the tutorial on udemy.com",
+              "state": "toDo",
+              "id": 1765792032576,
+              "date": "2025-12-15T09:47:12.576Z"
+            }
+          ]
+        },
+        {
+          "type": "inProgress",
+          "tasks": []
+        },
+        {
+          "type": "done",
+          "tasks": [
+            {
+              "taskName": "Finish KanbanFlow",
+              "description": "Push origin to master",
+              "state": "done",
+              "id": 1765792073786,
+              "date": "2025-12-15T09:47:53.786Z"
+            }
+          ]
+        }
+      ],
+      "date": "2025-12-15T09:44:28.605Z"
+    }
+  ]
+}

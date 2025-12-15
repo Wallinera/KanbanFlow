@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: oklch(76.9% 0.188 70.08);
+  --color-secondary: #193cb8;
+
+  --breakpoint-sm: 500px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    box-sizing: border-box;
+
+    @apply flex justify-center w-screen h-screen overflow-hidden  dark:bg-gray-900 duration-300 max-sm:overflow-visible;
+  }
+}
+
+@layer components {
+  .toDo {
+    @apply bg-gray-100 dark:bg-gray-700;
+  }
+  .inProgress {
+    @apply bg-amber-50 dark:bg-amber-300/30;
+  }
+  .done {
+    @apply bg-green-50 dark:bg-green-900/40;
+  }
+
+  .noScrollbar::-webkit-scrollbar {
+    display: none;
+    scroll-behavior: smooth;
+  }
+}
