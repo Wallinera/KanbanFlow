@@ -74,4 +74,4 @@ Emirhan Karagöz - [emirhan-karagoz1@hotmail.com](mailto:emirhan-karagoz1@hotmai
 
 Project Link: [GitHub Repository](https://github.com/Wallinera/KanbanFlow)
 
-Live Site URL: [KanbanFlow.vercell.app](https://world-wide-omega.vercel.app)
+Live Site URL: [KanbanFlow.vercell.app](https://kanban-flow-ashen.vercel.app)
