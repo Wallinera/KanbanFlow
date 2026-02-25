@@ -1,12 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  loadBoards,
+  saveBoards,
+  saveOrUpdateBoard,
+  removeBoard,
+} from "../../utils/storage";
 
+const persisted = loadBoards();
 const initialState = {
-  boards: [],
+  boards: persisted ?? [],
   activeBoard: null,
   showNewBaordForm: false,
 };
-
-const BASE_URL = `http://localhost:4000/boards`;
 
 const boardsSlice = createSlice({
   name: "boards",
@@ -21,13 +26,13 @@ const boardsSlice = createSlice({
     },
     deleteBoard(state, action) {
       state.boards = state.boards.filter(
-        (board) => board.id !== action.payload
+        (board) => board.id !== action.payload,
       );
     },
 
     setActiveBoard(state, action) {
       state.activeBoard = state.boards.find(
-        (board) => board.id === action.payload
+        (board) => board.id === action.payload,
       );
     },
     boardFormToggle(state) {
@@ -76,7 +81,7 @@ const boardsSlice = createSlice({
         const list = board.lists.find((l) => l.type === listType);
         if (list) {
           const taskIndex = list.tasks.findIndex(
-            (task) => task.id === updatedTask.id
+            (task) => task.id === updatedTask.id,
           );
           if (taskIndex !== -1) [(list.tasks[taskIndex] = updatedTask)];
         }
@@ -106,65 +111,36 @@ const boardsSlice = createSlice({
 });
 
 export function getBoards() {
-  return async function (dispatch) {
-    try {
-      const res = await fetch(BASE_URL);
-      const data = await res.json();
-
-      dispatch({ type: "boards/getBoards", payload: data });
-    } catch (error) {
-      throw new Error(error.message);
-    }
+  return function (dispatch) {
+    const data = loadBoards() || [];
+    dispatch({ type: "boards/getBoards", payload: data });
   };
 }
 
 export function addBoard(newBoard) {
-  return async function (dispatch) {
-    try {
-      const res = await fetch(`${BASE_URL}`, {
-        method: "POST",
-        body: JSON.stringify(newBoard),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-
-      dispatch({ type: "boards/addBoard", payload: data });
-    } catch (error) {
-      throw new Error(error.message);
-    }
+  return function (dispatch) {
+    const boards = loadBoards() || [];
+    const id = Date.now().toString();
+    const boardToSave = { ...newBoard, id };
+    boards.push(boardToSave);
+    saveBoards(boards);
+    dispatch({ type: "boards/addBoard", payload: boardToSave });
   };
 }
 
 export function deleteBoard(id) {
-  return async function (dispatch) {
-    try {
-      await fetch(`${BASE_URL}/${id}`, {
-        method: "DELETE",
-      });
-
-      dispatch({ type: "boards/deleteBoard", payload: id });
-    } catch (error) {
-      throw new Error(error.message);
-    }
+  return function (dispatch) {
+    removeBoard(id);
+    dispatch({ type: "boards/deleteBoard", payload: id });
   };
 }
 
 export function persistBoardChanges(boardId) {
-  return async function (dispatch, getState) {
+  return function (dispatch, getState) {
     try {
       const board = getState().boards.boards.find((b) => b.id === boardId);
       if (!board) return;
-
-      const res = await fetch(`${BASE_URL}/${boardId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lists: board.lists }),
-      });
-
-      if (!res.ok) throw new Error("Failed to persist changes");
-      // Changes are already in Redux, just sync with server
+      saveOrUpdateBoard(board);
     } catch (error) {
       console.error("Persist error:", error);
       throw error;

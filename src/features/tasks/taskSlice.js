@@ -5,12 +5,11 @@ import {
   moveTaskToList,
   editTask,
 } from "../boards/boardSlice";
+import { loadBoards, saveOrUpdateBoard } from "../../utils/storage";
 
 const initialState = {
   isLoading: false,
 };
-
-const BASE_URL = "http://localhost:4000";
 
 const boardsSlice = createSlice({
   name: "tasks",
@@ -35,9 +34,8 @@ export function addTask(boardId, listType, taskData) {
   return async function (dispatch) {
     dispatch({ type: "tasks/toggleIsLoading", payload: true });
     try {
-      const boardRes = await fetch(`${BASE_URL}/boards/${boardId}`);
-      if (!boardRes.ok) throw new Error("Failed to fetch board");
-      const board = await boardRes.json();
+      const boards = loadBoards() || [];
+      const board = boards.find((b) => String(b.id) === String(boardId));
 
       const newTask = {
         ...taskData,
@@ -48,15 +46,11 @@ export function addTask(boardId, listType, taskData) {
       const updatedLists = board.lists.map((list) =>
         list.type === listType
           ? { ...list, tasks: [newTask, ...list.tasks] }
-          : list
+          : list,
       );
 
-      const patchRes = await fetch(`http://localhost:4000/boards/${boardId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lists: updatedLists }),
-      });
-      if (!patchRes.ok) throw new Error("Failed to update board");
+      const updatedBoard = { ...board, lists: updatedLists };
+      saveOrUpdateBoard(updatedBoard);
 
       // Dispatch to Redux to update local state
       dispatch(addTaskToBoard({ boardId, listType, task: newTask }));
@@ -73,22 +67,17 @@ export function deleteTask(boardId, listType, taskId) {
   return async function (dispatch) {
     dispatch({ type: "tasks/toggleIsLoading", payload: true });
     try {
-      const boardRes = await fetch(`${BASE_URL}/boards/${boardId}`);
-      if (!boardRes.ok) throw new Error("Failed to fetch board");
-      const board = await boardRes.json();
+      const boards = loadBoards() || [];
+      const board = boards.find((b) => String(b.id) === String(boardId));
 
       const updatedLists = board.lists.map((list) =>
         list.type === listType
           ? { ...list, tasks: list.tasks.filter((task) => task.id !== taskId) }
-          : list
+          : list,
       );
 
-      const patchRes = await fetch(`http://localhost:4000/boards/${boardId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lists: updatedLists }),
-      });
-      if (!patchRes.ok) throw new Error("Failed to update board");
+      const updatedBoard = { ...board, lists: updatedLists };
+      saveOrUpdateBoard(updatedBoard);
       dispatch(deleteTaskFromBoard({ boardId, listType, taskId }));
     } catch (error) {
       console.error("deleteTask error:", error);
@@ -103,14 +92,13 @@ export function updateTask(boardId, listType, updatedTask) {
   return async function (dispatch) {
     dispatch({ type: "tasks/toggleIsLoading", payload: true });
     try {
-      const boardRes = await fetch(`${BASE_URL}/boards/${boardId}`);
-      if (!boardRes.ok) throw new Error("Failed to fetch board");
-      const board = await boardRes.json();
+      const boards = loadBoards() || [];
+      const board = boards.find((b) => String(b.id) === String(boardId));
 
       const updatedLists = board.lists.map((list) => {
         if (list.type === listType) {
           const targetIndex = list.tasks.findIndex(
-            (task) => task.id === updatedTask.id
+            (task) => task.id === updatedTask.id,
           );
           list.tasks[targetIndex] = updatedTask;
           return list;
@@ -119,19 +107,15 @@ export function updateTask(boardId, listType, updatedTask) {
         }
       });
 
-      const patchRes = await fetch(`http://localhost:4000/boards/${boardId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lists: updatedLists }),
-      });
-      if (!patchRes.ok) throw new Error("Failed to update board");
+      const updatedBoard = { ...board, lists: updatedLists };
+      saveOrUpdateBoard(updatedBoard);
 
       dispatch(
         editTask({
           boardId,
           listType,
           updatedTask,
-        })
+        }),
       );
     } catch (error) {
       console.error("deleteTask error:", error);
@@ -145,27 +129,22 @@ export function updateTaskState(boardId, listType, targetTask, newTaskState) {
   return async function (dispatch) {
     dispatch({ type: "tasks/toggleIsLoading", payload: true });
     try {
-      const boardRes = await fetch(`${BASE_URL}/boards/${boardId}`);
-      if (!boardRes.ok) throw new Error("Failed to fetch board");
-      const board = await boardRes.json();
+      const boards = loadBoards() || [];
+      const board = boards.find((b) => String(b.id) === String(boardId));
 
       const updatedLists = board.lists.map((list) =>
         list.type === newTaskState
           ? { ...list, tasks: [targetTask, ...list.tasks] }
           : list.type === listType
-          ? {
-              ...list,
-              tasks: list.tasks.filter((task) => task.id !== targetTask.id),
-            }
-          : list
+            ? {
+                ...list,
+                tasks: list.tasks.filter((task) => task.id !== targetTask.id),
+              }
+            : list,
       );
 
-      const patchRes = await fetch(`http://localhost:4000/boards/${boardId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lists: updatedLists }),
-      });
-      if (!patchRes.ok) throw new Error("Failed to update board");
+      const updatedBoard = { ...board, lists: updatedLists };
+      saveOrUpdateBoard(updatedBoard);
 
       dispatch(
         moveTaskToList({
@@ -173,7 +152,7 @@ export function updateTaskState(boardId, listType, targetTask, newTaskState) {
           fromListType: listType,
           toListType: newTaskState,
           task: targetTask,
-        })
+        }),
       );
     } catch (error) {
       console.error("deleteTask error:", error);

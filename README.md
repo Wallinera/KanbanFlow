@@ -23,14 +23,14 @@
 
 ## About the Project
 
-KanbanFlow is a Trello-inspired task management application designed to organize work using boards, lists, and cards. Users can create multiple boards (e.g. Personal, Work), each containing lists such as To Do, In Progress, and Done, and manage tasks as draggable cards within these lists. The app uses Redux Toolkit for predictable global state management, separating board, list, task, and UI state to ensure scalability and clarity. With features like task CRUD operations based on a json-server, drag-and-drop interactions, theme toggling, and state persistence, KanbanFlow demonstrates real-world state management patterns in a clean, modern React application—making it ideal as a portfolio project.
+KanbanFlow is a Trello-inspired task management application designed to organize work using boards, lists, and cards. Users can create multiple boards (e.g. Personal, Work), each containing lists such as To Do, In Progress, and Done, and manage tasks as draggable cards within these lists. The app uses Redux Toolkit for predictable global state management, separating board, list, task, and UI state to ensure scalability and clarity. With features like task CRUD operations based on local storage,theme toggling, and state persistence, KanbanFlow demonstrates real-world state management patterns in a clean, modern React application—making it ideal as a portfolio project.
 
 ## Features
 
 - **Custom Boards**: Create a board with desired name.
 - **Custom Tasks**: Add, edit, and delete tasks.
 - **Drag and Drop**: Drag and drop boards and Tasks and organize them according your desire.
-- **Dark Mode**: Too dark? change it to dark mode.
+- **Dark Mode**: Too light? change it to dark mode.
 - **Responsive Layout**: Use it on your mobile phone or tablets.
 
 ---
