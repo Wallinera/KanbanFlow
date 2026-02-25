@@ -87,8 +87,8 @@ export default function Task({ task }) {
 
         {/* Buttons */}
         <div
-          className={`flex items-center gap-2 max-lg:w-full max-md:hidden ${
-            showMobileMenu && "max-md:block"
+          className={`flex items-center gap-2 max-lg:w-full ${
+            !showMobileMenu ? "max-md:hidden" : ""
           }`}
         >
           <button
